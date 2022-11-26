@@ -1,10 +1,13 @@
 DMON_GO := go
 
-DMON_MAIN := supervisor.go
+DMON_MAIN := ./supervisor.go
 DMON_OBJ := dmon
 
 PREFIX := .
 DESTDIR := bin
+
+IPREFIX := ${HOME}
+IDESTDIR := .local/bin
 
 # sockshop
 DMON_WIRESHARK_IFACES := weave
@@ -19,6 +22,7 @@ DMON_REDIS_NETLOC := localhost:6379
 DMON_ARGS := -i $(DMON_WIRESHARK_IFACES) -n $(DMON_DOCKER_IFACES) -t $(DMON_DOCKER_TIMER) -r $(DMON_REDIS_NETLOC)
 
 DMON_DOCKER := docker
+DMON_DOCKERFILE := ./docker/Dockerfile
 DMON_IMAGE := rootvr/dmon
 
 .SILENT: help
@@ -38,31 +42,31 @@ clean:
 	rm -f $(PREFIX)/$(DESTDIR)/$(DMON_OBJ)
 
 .PHONY: run # compile and run dmon
-run: build
+run:
 	clear
 	$(DMON_GO) run $(DMON_MAIN) $(DMON_ARGS)
 
 .PHONY: install # install dmon into ~/.local/bin
 install:
-	install -D $(PREFIX)/$(DESTDIR)/$(DMON_OBJ) ${HOME}/.local/bin/$(DMON_OBJ)
+	install -D $(PREFIX)/$(DESTDIR)/$(DMON_OBJ) $(IPREFIX)/$(IDESTDIR)/$(DMON_OBJ)
 
 .PHONY: uninstall # unininstall dmon from ~/.local/bin
 uninstall:
-	rm -f ${HOME}/.local/bin/$(DMON_OBJ)
+	rm -f $(IPREFIX)/$(IDESTDIR)/$(DMON_OBJ)
 
 .PHONY: deps # resolve dependencies
 deps:
 	$(DMON_GO) mod tidy
 
-.SILENT: fmt
-.PHONY: fmt # format all
-fmt:
+.SILENT: format
+.PHONY: format # format all
+format:
 	$(DMON_GO) fmt ./...
 
-.PHONY: gen # generate dmon docker image
-gen:
-	$(DMON_DOCKER) build -f docker/Dockerfile -t $(DMON_IMAGE) .
+.PHONY: genimage # generate dmon docker image
+genimage:
+	$(DMON_DOCKER) build -f $(DMON_DOCKERFILE) -t $(DMON_IMAGE) .
 
-.PHONY: rmi # delete dmon docker image
-rmi:
+.PHONY: delimage # delete dmon docker image
+delimage:
 	$(DMON_DOCKER) rmi -f $(DMON_IMAGE)

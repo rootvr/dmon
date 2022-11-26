@@ -1,9 +1,10 @@
 ```console
 help                  print help
-all                   combo: clean, resolve deps and run dmon
 build                 compile dmon
 clean                 clean and remove dmon binary
 run                   compile and run dmon
+install               install dmon into ~/.local/bin
+uninstall             unininstall dmon from ~/.local/bin
 deps                  resolve dependencies
 fmt                   format all
 gen                   generate dmon docker image

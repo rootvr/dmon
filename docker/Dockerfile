@@ -1,3 +1,5 @@
+# FROM golang:alpine3.13
+
 FROM golang:alpine
 
 LABEL maintainers="Valentino Di Giosaffatte, Riccardo Armando Di Prinzio"

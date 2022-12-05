@@ -58,10 +58,10 @@ func clientInit(network_args []string, tick time.Duration) {
 	cli, err := docker_client.NewClientWithOpts(docker_client.FromEnv, docker_client.WithAPIVersionNegotiation())
 	utils.Panic(_modname, err, "docker::err", "docker client initialization error")
 	_cli = cli
-	getHostInfo()
-	getNetworkList(network_args)
 	for {
 		<-time.Tick(tick)
+                getHostInfo()
+                getNetworkList(network_args)
 		getContainerList()
 	}
 }
